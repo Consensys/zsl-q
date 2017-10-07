@@ -1,0 +1,12 @@
+To create custom parameters in the current directory:
+
+go run createparams.go
+
+The process will take several minutes to produce the following files:
+
+shielding.pk
+shielding.vk
+transfer.pk
+transfer.vk
+unshielding.pk
+unshielding.vk
