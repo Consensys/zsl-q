@@ -143,7 +143,7 @@ Now that you have the 7nodes example environment running, you can try out some o
 
 Some of the examples use the ZSL API, a set of Javascript functions added to Quorum and available under the `zsl.*` namespace.  You can list them in the Quorum terminal by entering `zsl.` and pressing the TAB key.
 
-The examples also  make use of `tracker.js` which is a file containing a collection of helpful functions, some of which are grouped under the `zdemo.*` namespace.
+The examples also  make use of `ztracker.js` which is a file containing a collection of helpful functions, some of which are grouped under the `zdemo.*` namespace.
 
 Ztracker:
 
@@ -170,7 +170,7 @@ Zdemo:
 
 Create the ztoken:
 
-    loadScript('tracker.js')
+    loadScript('ztracker.js')
     ztoken = zdemo.create_ztoken('ACME', 100000)
 
 Explore the ztoken:
@@ -255,58 +255,58 @@ Congratulations, you've just completed your first shielding and unshielding!
 
 ## Example 2 - Private Contract Trade
 
-Node 1 and Node 2 will execute a private trade of two different assets.  In this example, Node 1 will offer 300 USD for 100 ACME.
+Alice and Bob will execute a private trade of two different assets.  In this example, Alice will offer 300 USD for 100 ACME.
 
-On both node 1 and node 2:
+On both Alice's node and Bob's node:
 
-Store node account and private constellation address in local variables.
+    loadScript("zdemo.js")
 
-    var node1 = "0xed9d02e382b34818e88b88a309c7fe71e65f419d";
-    var node2 = "0xca843569e3427144cead5e4d5999a3d0ccf92b8e";
-    var constellation1 = 'BULeR8JyUWhiuuCMU/HLA0Q5pzkYT+cHII3ZKBey3Bo=';
-    var constellation2 = 'QfeDAys9MPDs2XHExtc84jKGHxZg/aj52DTh0vtA3Xc=';
+This will store the address of node account and private constellation address in local variables, as follows:
 
-Load demo helper functions and a lightweight note tracker which acts like a wallet. 
+    var alice = "0xed9d02e382b34818e88b88a309c7fe71e65f419d";
+    var bob = "0xca843569e3427144cead5e4d5999a3d0ccf92b8e";
+    var alice_constellation = "BULeR8JyUWhiuuCMU/HLA0Q5pzkYT+cHII3ZKBey3Bo=";
+    var bob_constellation = "QfeDAys9MPDs2XHExtc84jKGHxZg/aj52DTh0vtA3Xc=";
 
-    loadScript("tracker.js")
+The script `zdemo.js` will also load `ztracker.js` to provide helper functions and a lightweight note tracker which acts like a wallet.
 
-On node 1, create two z-contracts:
+On Alice's node, create two z-contracts:
 
     ztoken_usd = zdemo.create_ztoken("USD",100000)
     ztoken_acme = zdemo.create_ztoken("ACME",50000)
 
-On node 1, create a note tracker:
+On Alice's node, create a note tracker:
 
     tracker = new ztracker();
 
-On node 1, shield 10000 USD and transfer 5000 ACME to node 2.
+On Alice's node, shield 10000 USD and transfer 5000 ACME to Bob's node.
 
     tracker.shield(ztoken_usd, 10000)
-    ztoken_acme.transfer(node2, 5000, {from:node1, gas:5470000});
+    ztoken_acme.transfer(bob, 5000, {from:alice, gas:5470000});
 
-On node 1, create a private contract for a trade, 300 USD for 100 ACME.
+On Alice's node, create a private contract for a trade, 300 USD for 100 ACME.
 
-    zprivatecontract = zdemo.create_zprivatecontract(tracker, constellation1, ztoken_usd, 300, constellation2, ztoken_acme, 100);
+    zprivatecontract = zdemo.create_zprivatecontract(tracker, alice_constellation, ztoken_usd, 300, bob_constellation, ztoken_acme, 100);
 
-On node 1, watch for events that update the state of the trade.
+On Alice's node, watch for events that update the state of the trade.
 
     zdemo.watch_events(zprivatecontract)
 
-On node 1, obtain the address of the private contract.
+On Alice's node, obtain the address of the private contract.
 
     a = zprivatecontract.address
 
-On node 2, use this address to reference the private contract.
+On Bob's node, use this address to reference the private contract.
 
     zprivatecontract = zdemo.get_zprivatecontract(a)
 
-On node 2, watch private contract events and reference the z-contracts involved in the trade.
+On Bob's node, watch private contract events and reference the z-contracts involved in the trade.
 
     zdemo.watch_events(zprivatecontract)
     ztoken_usd = zdemo.get_ztoken(zprivatecontract.bidTokenAddress())
     ztoken_acme = zdemo.get_ztoken(zprivatecontract.askTokenAddress())
 
-On node 2, set up a a note tracker and shield some of the ACME funds received from node 1.
+On Bob's node, set up a a note tracker and shield some of the ACME funds received from Alice's node.
 
     tracker = new ztracker()
     tracker.shield(ztoken_acme, 1000)
@@ -315,24 +315,24 @@ On node 2, set up a a note tracker and shield some of the ACME funds received fr
     tracker.list(ztoken_acme, 1111)
     tracker.list(ztoken_acme, 500)
 
-On node 2, accept the bid of 300 USD for 100 ACME.
+On Bob's node, accept the bid of 300 USD for 100 ACME.
 
     zdemo.accept_bid(tracker, zprivatecontract)
 
 The trade has now been agreed, so it's time for both nodes to settle the trade.
 
-On node1, select a note to spend by using its identifier (uuid).
+On Alice's node, select a note to spend by using its identifier (uuid).
     
     tracker.list(ztoken_usd)
     uuid = ...
 
-On node 1, submit the 300 USD payment to node 2.
+On Alice's node, submit the 300 USD payment to Bob's node.
 
     zdemo.submit_payment(tracker, ztoken_usd, zprivatecontract, uuid)
     tracker.spent
     tracker.list(ztoken_usd)
 
-on node2, settle the trade by sending 100 ACME to node 1.
+on Bob's node, settle the trade by sending 100 ACME to Alice's node.
 
     tracker.list(ztoken_acme)
     uuid = ...
@@ -340,7 +340,7 @@ on node2, settle the trade by sending 100 ACME to node 1.
 
 The trade should now be settled.  Now check balances and unshield funds.
 
-On node 2, unshield the USD received.
+On Bob's node, unshield the USD received.
 
     ztoken_usd.balance()
     tracker.balance(ztoken_usd)
@@ -352,7 +352,7 @@ On node 2, unshield the USD received.
     tracker.list(ztoken_usd)
     tracker.spent
 
-on node 1, unshield the ACME received.
+on Alice's node, unshield the ACME received.
 
     ztoken_acme.balance()
     tracker.list(ztoken_acme)
@@ -365,16 +365,16 @@ Congratulations, you've completed your first private trade!
 
 ## Example 3 - Tracker Persistence
 
-Continuing example 2 above, on node 1, save the tracker to disk.
+Continuing example 2 above, on Alice's node, save the tracker to disk.
 
-    tracker.save("node1.tracker")
+    tracker.save("alice.tracker")
 
-On node 2, create a new tracker from the data on disk.
+On Bob's node, create a new tracker from the data on disk.
 
     tmp = new ztracker();
-    tmp.load("node1.tracker")
+    tmp.load("alice.tracker")
 
-Examine the new tracker to confirm that the data matches that of node 1.
+Examine the new tracker to confirm that the data matches that of Alice's node.
 
     tmp.list(ztoken_usd)
     tmp.list(ztoken_acme)
