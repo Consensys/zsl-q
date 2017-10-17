@@ -112,7 +112,7 @@ contract ZToken is owned, SafeMath, ZSLMerkleTree {
     }
 
     /**
-     * @return capacity Maxmimum number of shielded transactions this contract can process
+     * @return capacity Token balance for message sender.
      */
     function balance() public constant returns (uint256) {
         return this.balanceOf(msg.sender);
