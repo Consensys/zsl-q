@@ -559,7 +559,9 @@
 	ADDL  y3, h                        // h = t1 + S0 + MAJ					// --
 
 TEXT ·block(SB), 0, $536-32
-	CMPB runtime·support_avx2(SB), $1
+//	CMPB runtime·support_avx2(SB), $1
+	CMPB ·useAVX2(SB), $1
+
 	JE   avx2
 
 	MOVQ p_base+8(FP), SI
