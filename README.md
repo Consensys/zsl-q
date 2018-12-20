@@ -4,8 +4,6 @@
 
 This proof of concept (POC) is intended to demonstrate how ZSL can complement Quorum, and provide a platform for experimentation and exploration of different use cases. It implements a simplified, stripped-down version of the Zerocash protocol to enable rapid prototyping. There is no formal security proof for the protocol, and it should not be considered “production-ready”. 
 
-One of the omissions is the lack of a digital signature over the transaction to authenticate and prevent malleability. Addressing this shortcoming is straightforward (albeit time consuming) to implement. However, [forthcoming improvements to zk-SNARKs](https://z.cash/blog/cultivating-sapling-faster-zksnarks.html) offer a simpler, more efficient way to address malleability (as well as faster proof generation), and we expect to implement these improvements for the ZSL/Quorum protocol as we progress from a POC to a production-ready implementation.
-
 ## License
 
 The contents of this repository are licensed under the Apache License 2.0.
