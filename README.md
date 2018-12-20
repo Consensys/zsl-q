@@ -34,10 +34,10 @@ Quorum with ZSL provides a JavaScript API accessible under the zsl.* namespace i
 * zsl.getSendNullifier(rho) returns hash
 * zsl.getSpendNullifier(rho, sk) returns hash
 * zsl.createShielding(rho, pk, value) returns proof
-* zsl.createUnshielding(rho, sk, value, treeIndex, authPath) returns proof
+* zsl.createUnshielding(rho, sk, addr, value, treeIndex, authPath) returns proof
 * zsl.createShieldedTransfer(rho1, sk1, value1, treeIndex1, authPath1, rho2, sk2, value2, treeIndex2, authPath2, outrho1, outpk1, outvalue1, outrho2, outpk2, outvalue2) returns proof
 * zsl.verifyShielding(proof, send_nf, commitment, value) returns bool
-* zsl.verifyUnshielding(proof, spend_nf, root, value) returns bool
+* zsl.verifyUnshielding(proof, spend_nf, root, addr, value) returns bool
 * zsl.verifyShieldedTransfer(proof, anchor, spend_nf1, spend_nf2, send_nf1, send_nf2, commitment1, commitment2) returns bool
 
 ## Zsl-golang library
@@ -228,14 +228,14 @@ Let's create a proof to unshield these funds.
     treeIndex = parseInt(witnesses[0])
     authPath = witnesses[1]
 
-    result = zsl.createUnshielding(rho, sk, value, treeIndex, authPath)
+    result = zsl.createUnshielding(rho, sk, eth.accounts[0], value, treeIndex, authPath)
 
     proof = result['proof']
     spend_nf = result['spend_nf']
 
 Let's verify this proof manually (the ztoken will automatically perform this step)
 
-    zsl.verifyUnshielding(proof, spend_nf, rt, value)
+    zsl.verifyUnshielding(proof, spend_nf, rt, eth.accounts[0], value)
 
 Now ask the ztoken contract to unshield and update balances:
 
