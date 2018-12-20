@@ -24,8 +24,15 @@ contract ZSLPrecompileSHA256Compress {
 /**
  @title Abstract contract for built-in function
  */
-contract ZSLPrecompileVerify {
+contract ZSLPrecompileVerifyShielding {
     function run(bytes, bytes32, bytes32, uint64) constant returns (bytes32);
+}
+
+/**
+ @title Abstract contract for built-in function
+ */
+contract ZSLPrecompileVerifyUnshielding {
+    function run(bytes, bytes32, bytes32, address, uint64) constant returns (bytes32);
 }
 
 /**
@@ -42,15 +49,15 @@ contract ZSLPrecompile {
 
     ZSLPrecompileSHA256Compress private compressContract;
     ZSLPrecompileVerifyTransfer private verifyShieldedTransferContract;
-    ZSLPrecompileVerify private verifyShieldingContract;
-    ZSLPrecompileVerify private verifyUnshieldingContract;
+    ZSLPrecompileVerifyShielding private verifyShieldingContract;
+    ZSLPrecompileVerifyUnshielding private verifyUnshieldingContract;
 
     // @dev Address of precompiles must match those in the Geth/Quorum client
     function ZSLPrecompile() {
         compressContract = ZSLPrecompileSHA256Compress(0x0000000000000000000000000000000000008801);
         verifyShieldedTransferContract = ZSLPrecompileVerifyTransfer(0x0000000000000000000000000000000000008802);
-        verifyShieldingContract = ZSLPrecompileVerify(0x0000000000000000000000000000000000008803);
-        verifyUnshieldingContract = ZSLPrecompileVerify(0x0000000000000000000000000000000000008804);
+        verifyShieldingContract = ZSLPrecompileVerifyShielding(0x0000000000000000000000000000000000008803);
+        verifyUnshieldingContract = ZSLPrecompileVerifyUnshielding(0x0000000000000000000000000000000000008804);
     }
 
     // @param input Input data block must be 64 bytes (512 bits) in length
@@ -98,8 +105,8 @@ contract ZSLPrecompile {
 
 
     // @param input The ZK Proof to verify
-    function verifyUnshielding(bytes proof, bytes32 spend_nf, bytes32 rt, uint64 value) constant external returns (bool) {
-        bytes32 buffer = verifyUnshieldingContract.run(proof, spend_nf, rt, value);
+    function verifyUnshielding(bytes proof, bytes32 spend_nf, bytes32 rt, address addr, uint64 value) constant external returns (bool) {
+        bytes32 buffer = verifyUnshieldingContract.run(proof, spend_nf, rt, addr, value);
         byte b = buffer[0];
         if (b == 0x00) {
             return false;

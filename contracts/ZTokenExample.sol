@@ -155,7 +155,7 @@ contract ZToken is owned, SafeMath, ZSLMerkleTree {
     function unshield(bytes proof, bytes32 spend_nf, bytes32 cm, bytes32 rt, uint64 value) public {
         require(mapNullifiers[spend_nf] == 0);             // check if nullifier has been used before
         require(commitmentExists(cm));
-        assert(zsl.verifyUnshielding(proof, spend_nf, rt, value));     // verfy proof
+        assert(zsl.verifyUnshielding(proof, spend_nf, rt, msg.sender, value));     // verfy proof
         mapNullifiers[spend_nf] = 1;
         balanceOf[msg.sender] = safeAdd(balanceOf[msg.sender], value);     // check for overflow
         LogUnshielding(msg.sender, value, sha3(cm));
