@@ -82,6 +82,8 @@ To use ZSL with 7nodes, one of the [Quorum examples](https://github.com/jpmorgan
 
 ## Setting Up
 
+For running locally, to build `quorum` the installation of [golang](https://golang.org/) is necessary. Branch ` zsl_geth1.6` requires go version 1.7.X.  
+
 Build `quorum` and copy binaries into a folder in the `quorum-examples` project:
 
     mkdir ~/projects/quorum-examples/zsl-tmp/
@@ -121,11 +123,13 @@ Symbolic links should already exist to the parameters, but if not, create them m
 
 ### Running on local machine
 
+Set up the [Constellation](https://github.com/jpmorganchase/constellation) Transaction Manager.   The prerequisites are listed [here](https://github.com/jpmorganchase/constellation#prerequisites) and the [precompiled binaries](https://github.com/jpmorganchase/constellation#downloading-precompiled-binaries) can be found [here](https://github.com/jpmorganchase/constellation/releases).
+
 When running the example locally and not in a VM, in the folder `quorum-examples/examples/7nodes`:
 
 * delete symbolic links: `rm *.pk *.vk`
 * move the parameters into the folder to replace the deleted symbolic links.
-* ensure the quorum binaries can be found in your local `$PATH` i.e. copy the quorum binaries into `/usr/local/bin/` or add `~/projects/quorum/build/bin` to your `$PATH`.
+* ensure the quorum and constellation binaries can be found in your local `$PATH` i.e. copy the quorum binaries into `/usr/local/bin/` or add `~/projects/quorum/build/bin` to your `$PATH`.
 
 ## Launch 7nodes
 
@@ -136,6 +140,9 @@ In folder `quorum-examples/examples/7nodes` enter:
     geth attach qdata/dd1/geth.ipc
 
 Now that you have the 7nodes example environment running, you can try out some of the examples below.
+
+**Troubleshooting Tip**:
+Increase the `sleep` time in the `./raft-start.sh` script if errors stating the transaction manager isn't running appear.  
 
 ## Javascript Functions
 
