@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This proof of concept (POC) is intended to demonstrate how ZSL can complement Quorum, and provide a platform for experimentation and exploration of different use cases. It implements a simplified, stripped-down version of the Zerocash protocol to enable rapid prototyping. There is no formal security proof for the protocol, and it should not be considered “production-ready”. 
+This proof of concept (POC) is intended to demonstrate how ZSL can complement Quorum, and provide a platform for experimentation and exploration of different use cases. It implements a simplified, stripped-down version of the Zerocash protocol to enable rapid prototyping. There is no formal security proof for the protocol, and it should not be considered “production-ready”.
 
 ## License
 
@@ -22,7 +22,7 @@ This repository contains:
 Quorum with ZSL provides a JavaScript API accessible under the zsl.* namespace in the Quorum terminal.
 
 * zsl.getRandomness() returns buffer
-* zsl.getNewAddrses() returns keypair
+* zsl.getNewAddress() returns keypair
 * zsl.debugShielding() returns bool
 * zsl.debugUnshielding() returns bool
 * zsl.debugShieldedTransfer() returns bool
@@ -327,7 +327,7 @@ On Bob's node, accept the bid of 300 USD for 100 ACME.
 The trade has now been agreed, so it's time for both nodes to settle the trade.
 
 On Alice's node, select a note to spend by using its identifier (uuid).
-    
+
     tracker.list(ztoken_usd)
     uuid = ...
 
